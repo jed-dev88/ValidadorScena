@@ -100,7 +100,7 @@ def validate_flights(df):
     return df, violations
 
 def main():
-    st.title('Validador de Operações de Voo')
+    st.title('Validador de Operações do Scena')
     
     # Upload de arquivo
     st.subheader('Carregar Dados')
