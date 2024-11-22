@@ -101,6 +101,24 @@ def validate_flights(df):
 
 def main():
     st.title('Validador de Operações do Scena')
+
+    # Adiciona a pergunta antes do upload
+    st.subheader('Verificação Inicial')
+    movement_validation = st.radio(
+        "Foi feita a validação de movimentação do aeroporto?",
+        ('Sim', 'Não'),
+        index=1  # Define 'Não' como valor padrão
+    )
+    
+    # Adiciona uma linha divisória para melhor organização visual
+    st.divider()
+    
+    # Se a validação não foi feita, mostra um aviso
+    if movement_validation == 'Não':
+        st.warning('Atenção: É recomendado fazer a validação de movimentação do aeroporto antes de prosseguir.')
+
+    
+    
     
     # Upload de arquivo
     st.subheader('Carregar Dados')
