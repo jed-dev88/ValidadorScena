@@ -180,10 +180,11 @@ def main():
         
         with col2:
             validation_report = generate_validation_report(violations, len(df)-1)
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             st.download_button(
                 label="Baixar relatório de validação (TXT)",
                 data=validation_report,
-                file_name="relatorio_validacao.txt",
+                file_name=f"relatorio_validacao_{timestamp}.txt",
                 mime="text/plain"
             )
     else:
