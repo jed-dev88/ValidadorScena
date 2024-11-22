@@ -69,7 +69,7 @@ def validate_flights(df):
         if pd.notna(row['Registro']):
             prefix = row['Registro'][:2]
             origem = row['Org.']
-            excecoes_origem = ['MVD', 'EZE', 'LIS', 'AEP','SID']
+            excecoes_origem = ['MVD', 'EZE', 'LIS', 'AEP','SID','MCO','FLL','TFS','RKA','LPA','ACC','MIA','LPA']
             
             if prefix in ['PT', 'PS', 'PP', 'PR', 'PU']:
                 if origem not in excecoes_origem and row['Cl.'] != 'A':
