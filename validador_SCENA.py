@@ -196,7 +196,7 @@ def main():
                 st.write(violations['assoc_time_violations'])
 
             if violations['service_match_violations']:
-                st.write("Violações de Data/Hora (Assoc. Data+AOBT < Assoc. F.ETime+ATOT):", 
+                st.write("Violações de Tipos de Serviço da Chegada e Partida):", 
                         len(violations['service_match_violations']))
                 st.write(violations['service_match_violations'])
         
