@@ -32,7 +32,10 @@ def validate_flights(df):
         'registration_violations': [],
         'movement_violations': [],
         'operation_violations': [],
-        'assoc_time_violations': []
+        'assoc_time_violations': [],
+        'registration_match_violations': [],
+        'fab_service_violations': [],
+        'service_match_violations': []  # New violation type
     }
     
     df = df[~df['Sit.'].isin(['CAN', 'BOR'])]
@@ -40,8 +43,27 @@ def validate_flights(df):
     for idx, row in df.iloc[1:].iterrows():
         flight_id = row['Id.Vuelo']
         
+        # New validation for service match
+        if pd.notna(row['Sv.']) and pd.notna(row['Assoc. Sv.']):
+            if row['Sv.'] != row['Assoc. Sv.']:
+                violations['service_match_violations'].append(
+                    f"Voo {flight_id}: Serviço ({row['Sv.']}) " +
+                    f"não corresponde ao serviço associado ({row['Assoc. Sv.']})")
+        
+        # Rest of the existing validations
+        if pd.notna(row['Registro']) and 'FAB' in row['Registro']:
+            if row['Serv.'] != 'W':
+                violations['fab_service_violations'].append(
+                    f"Voo {flight_id}: Registro FAB ({row['Registro']}) deve ter Serv. = W, encontrado: {row['Serv.']}")
+        
         arrival_datetime = convert_datetime(row['Fecha'], row['ALDT'])
         block_datetime = convert_datetime(row['F.ETime'], row['AIBT'])
+        
+        if pd.notna(row['Registro']) and pd.notna(row['Assoc. Registro']):
+            if row['Registro'] != row['Assoc. Registro']:
+                violations['registration_match_violations'].append(
+                    f"Voo {flight_id}: Registro de chegada ({row['Registro']}) " +
+                    f"não corresponde ao registro de saída ({row['Assoc. Registro']})")
         
         if arrival_datetime and block_datetime:
             if not arrival_datetime <= block_datetime:
@@ -136,6 +158,14 @@ def main():
         if total_violations > 0:
             st.subheader('Violações por Categoria')
             
+            if violations['fab_service_violations']:
+                st.write("Violações de Serviço FAB:", len(violations['fab_service_violations']))
+                st.write(violations['fab_service_violations'])
+            
+            if violations['registration_match_violations']:
+                st.write("Violações de Correspondência de Registro:", len(violations['registration_match_violations']))
+                st.write(violations['registration_match_violations'])
+            
             if violations['time_violations']:
                 st.write("Violações de Data/Hora (Fecha+ALDT < F.ETime+AIBT):", len(violations['time_violations']))
                 st.write(violations['time_violations'])
@@ -164,6 +194,11 @@ def main():
                 st.write("Violações de Data/Hora (Assoc. Data+AOBT < Assoc. F.ETime+ATOT):", 
                         len(violations['assoc_time_violations']))
                 st.write(violations['assoc_time_violations'])
+
+            if violations['service_match_violations']:
+                st.write("Violações de Data/Hora (Assoc. Data+AOBT < Assoc. F.ETime+ATOT):", 
+                        len(violations['service_match_violations']))
+                st.write(violations['service_match_violations'])
         
         st.subheader('Dados Validados')
         st.dataframe(df_validated)
