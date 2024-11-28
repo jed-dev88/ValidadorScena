@@ -52,9 +52,9 @@ def validate_flights(df):
         
         # Rest of the existing validations
         if pd.notna(row['Registro']) and 'FAB' in row['Registro']:
-            if row['Serv.'] != 'W':
+            if row['Sv.'] != 'W':
                 violations['fab_service_violations'].append(
-                    f"Voo {flight_id}: Registro FAB ({row['Registro']}) deve ter Serv. = W, encontrado: {row['Serv.']}")
+                    f"Voo {flight_id}: Registro FAB ({row['Registro']}) deve ter Serv. = W, encontrado: {row['Sv.']}")
         
         arrival_datetime = convert_datetime(row['Fecha'], row['ALDT'])
         block_datetime = convert_datetime(row['F.ETime'], row['AIBT'])
